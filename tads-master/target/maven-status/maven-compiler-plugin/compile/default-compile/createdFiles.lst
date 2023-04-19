@@ -1,0 +1,8 @@
+co\edu\umanizales\tads\controller\ListSEController.class
+co\edu\umanizales\tads\model\Kid.class
+co\edu\umanizales\tads\TadsApplication.class
+co\edu\umanizales\tads\service\ListSEService.class
+co\edu\umanizales\tads\controller\dto\ErrorDTO.class
+co\edu\umanizales\tads\controller\dto\ResponseDTO.class
+co\edu\umanizales\tads\model\Node.class
+co\edu\umanizales\tads\model\ListSE.class
