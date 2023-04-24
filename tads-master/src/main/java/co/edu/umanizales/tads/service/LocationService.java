@@ -9,7 +9,7 @@ import java.util.List;
 
 @Service
 @Data
-public class LocationService {
+public class   LocationService {
 
     private List<Location>locations;
     public LocationService()
