@@ -106,17 +106,42 @@ public class ListSE {
     /*
     intercalar niño niña
      */
-    public void intercaleBoyAndGirl(){
-        ListSE listM = new ListSE();
-        ListSE listF = new ListSE();
-        Node temp = head;
-        while (temp!=null) {
-            if (temp.getData().getGender()== 'M'){}
-            listM.add (temp.getData());
+    public void intercalateKidByGender() throws ListSEException
+    {
+        ListSE listM=new ListSE();
+        ListSE listF=new ListSE();
+        ListSE exchangeGenderList= new ListSE();
+        Node temp=head;
+        while(temp!=null)
+        {
+            if(temp.getData().getGender()=='M')
+            {
+                listM.add(temp.getData());
+            }
+            else
+            {
+                listF.add(temp.getData());
+            }
+            temp.getNext();
         }
-        temp= temp.getNext();
-    }
+        Node tempM=listM.getHead();
+        Node tempF=listF.getHead();
+        Node tempexchange= exchangeGenderList.head;
+        while( tempM!=null && tempF!=null)
+        {
+            if(tempexchange.getData().getGender()=='M')
+            {
+                exchangeGenderList.add(tempF.getData());
+            }
+            else
+            {
+                exchangeGenderList.add(tempM.getData());
+            }
+            tempexchange.getNext();
+        }
+        head=exchangeGenderList.getHead();
 
+    }
 
 
     public void invert(){
@@ -204,7 +229,40 @@ public class ListSE {
     //El niño adelante posiciones
 
 
-    public void passKidPossitions
+    public void passKidPossitions(String idetification, int position)
+    {
+        if(head!= null){
+            Node temp = head;
+            int count=1;
+            while(temp!=null && !temp.getData().equals(idetification))
+            {
+                temp=temp.getNext();
+                count++
+            }
+            int positiontoadd=count-position;
+            Kid kidcopy=temp.getNext().getData();
+            deleteKidById(temp.getNext().getData().getIdentification(),count);
+            addInpos(kidcopy,positiontoadd);
+        }
+    }
+
+    //el niño retrocede oosiciones dadas
+
+    public  void backKidPistions(String idetification,int position){
+        if(head!=null){
+            Node temp=head;
+            int count=1;
+            while (temp!=null && !temp.getData().equals(idetification))
+            {
+                temp=temp.getNext();
+                count++;
+            }
+            int positiontoadd=count+position;
+            Kid kidcopy=temp.getNext().getData();
+            deleteKidById(temp.getNext().getData().getIdentification(),count);
+            addInpos(kidcopy,positiontoadd);
+        }
+    }
 
 
 
@@ -256,26 +314,7 @@ public class ListSE {
     }
 
 
-    public void passKIdPos(String id, int posicion )
-    {
-        Node temp =head;
 
-        if(head!=null)
-        {
-            int pos = 1;
-            if (head.getData().equals(id))
-            {
-
-
-
-
-            }
-
-
-        }
-
-
-    }
 
 
 
