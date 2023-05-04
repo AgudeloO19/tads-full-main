@@ -1,6 +1,13 @@
 package co.edu.umanizales.tads.model;
+import java.util.List;
+import java.util.ArrayList;
 
+import co.edu.umanizales.tads.controller.dto.GenderDTO;
+import co.edu.umanizales.tads.controller.dto.KidByLocationAndGenderDTO;
+import co.edu.umanizales.tads.exception.ListSEException;
 import lombok.Data;
+
+import java.awt.*;
 
 @Data
 public class ListSE {
@@ -21,6 +28,8 @@ public class ListSE {
     no
         metemos el niño en el costal y ese costal es la cabeza
      */
+
+
     public void add(Kid kid){
         if(head != null){
             Node temp = head;
@@ -60,6 +69,56 @@ public class ListSE {
         size++;
     }
 
+    /*
+
+    metodo para añadir en posiscion
+     */
+
+    public void addInpos(Kid kid,int pos) {
+        Node temp = head;
+        for (int i = 0; i < pos; i++) {
+            temp = temp.getNext();
+        }
+        Node newNode =new Node(kid);
+        temp.setNext(newNode);
+    }
+    /*
+    niños al inicio y niñas al final
+     */
+    public void orderBoysToStart() throws ListSEException{
+        if(this.head !=null){
+            ListSE listCp = new ListSE();
+            Node temp = this.head;
+            while(temp != null){
+                if(temp.getData().getGender()=='M')
+                {
+                    listCp.addToStart(temp.getData());
+                }
+                else{
+                    listCp.add(temp.getData());
+                }
+
+                temp = temp.getNext();
+            }
+            this.head = listCp.getHead();
+        }
+    }
+    /*
+    intercalar niño niña
+     */
+    public void intercaleBoyAndGirl(){
+        ListSE listM = new ListSE();
+        ListSE listF = new ListSE();
+        Node temp = head;
+        while (temp!=null) {
+            if (temp.getData().getGender()== 'M'){}
+            listM.add (temp.getData());
+        }
+        temp= temp.getNext();
+    }
+
+
+
     public void invert(){
         if(this.head !=null){
             ListSE listCp = new ListSE();
@@ -93,6 +152,12 @@ public class ListSE {
             head = null;
         }
     }
+    /*
+    Obtener el promedio de edad de los niños de la lista 
+     */
+
+
+
 
     // Eliminar ninos por edad
     public void deleteKidByAge(String age, int posicion) {
@@ -119,6 +184,30 @@ public class ListSE {
             head = null;
         }
     }
+    //Obtener el promedio de edad de los niños de la lista.
+
+    public float avarageAge() {
+        if (head != null) {
+            Node temp = head;
+            int count =0;
+            int ages = 0;
+            while (temp.getNext()!=null) {
+                count++;
+                ages = ages + temp.getData().getAge();
+            }
+            return  (float) ages/count;
+        }else
+        {
+            return (int) 0;
+        }
+    }
+    //El niño adelante posiciones
+
+
+    public void passKidPossitions
+
+
+
 
     public Kid returnKidEliminate(String Identification, int posicion) {
         Node temp = head;
@@ -149,6 +238,8 @@ public class ListSE {
         return eliminateKid;
     }
 
+
+
     public int getPosById(String id) {
         Node temp = head;
         int acum = 0;
@@ -174,7 +265,7 @@ public class ListSE {
             int pos = 1;
             if (head.getData().equals(id))
             {
-                head =temp.getNext();
+
 
 
 
@@ -187,31 +278,6 @@ public class ListSE {
     }
 
 
-
-
-
-
-
-
-
-    public void orderBoysToStart(){
-        if(this.head !=null){
-            ListSE listCp = new ListSE();
-            Node temp = this.head;
-            while(temp != null){
-                if(temp.getData().getGender()=='M')
-                {
-                    listCp.addToStart(temp.getData());
-                }
-                else{
-                    listCp.add(temp.getData());
-                }
-
-                temp = temp.getNext();
-            }
-            this.head = listCp.getHead();
-        }
-    }
 
     public void changeExtremes(){
         if(this.head !=null && this.head.getNext() !=null)
@@ -242,6 +308,11 @@ public class ListSE {
         }
         return count;
     }
+
+
+
+
+
 
 
 
