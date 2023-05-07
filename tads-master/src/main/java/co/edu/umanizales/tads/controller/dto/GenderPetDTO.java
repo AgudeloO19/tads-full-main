@@ -6,9 +6,11 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 
-public class GenderDTO {
+public class GenderPetDTO {
 
-    private char gender;
+    private char     gender;
+
     private int quantity;
+
 
 }

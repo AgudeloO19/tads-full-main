@@ -5,13 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Kid {
-    private String identification;
+public class LocationPets {
+    private String code;
     private String name;
-    private byte age;
-    private String gender;
-    private Location location;
-
-
-
 }

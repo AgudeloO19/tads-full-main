@@ -10,8 +10,15 @@ public class Pet {
 
     private  String race;
 
-    private byte age;
+    private byte agepet;
 
     private  String name;
+
+    private String genderpet;
+
+    private Location locationpet;
+
+    private  String carnet;
+
 
 }

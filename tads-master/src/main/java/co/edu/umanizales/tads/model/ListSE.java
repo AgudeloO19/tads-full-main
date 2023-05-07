@@ -90,7 +90,7 @@ public class ListSE {
             ListSE listCp = new ListSE();
             Node temp = this.head;
             while(temp != null){
-                if(temp.getData().getGender()=='M')
+                if(temp.getData().getGender().equals("M"))
                 {
                     listCp.addToStart(temp.getData());
                 }
@@ -114,7 +114,7 @@ public class ListSE {
         Node temp=head;
         while(temp!=null)
         {
-            if(temp.getData().getGender()=='M')
+            if(temp.getData().getGender().equals("M"))
             {
                 listM.add(temp.getData());
             }
@@ -129,7 +129,7 @@ public class ListSE {
         Node tempexchange= exchangeGenderList.head;
         while( tempM!=null && tempF!=null)
         {
-            if(tempexchange.getData().getGender()=='M')
+            if(tempexchange.getData().getGender().equals("M"))
             {
                 exchangeGenderList.add(tempF.getData());
             }
@@ -237,7 +237,7 @@ public class ListSE {
             while(temp!=null && !temp.getData().equals(idetification))
             {
                 temp=temp.getNext();
-                count++
+                count++;
             }
             int positiontoadd=count-position;
             Kid kidcopy=temp.getNext().getData();
@@ -264,13 +264,34 @@ public class ListSE {
         }
     }
 
+    public void addToEndNameChar(String letra) throws ListSEException
+    {
+
+        if(head!=null)
+        {
+            ListSE listCp=new ListSE();
+            Node temp=head;
+            if(temp.getData().getName().startsWith(letra))
+            {
+                listCp.add(temp.getData());
+                temp=temp.getNext();
+            }
+            else
+            {
+                listCp.addToStart(temp.getData());
+                temp=temp.getNext();
+            }
+            head=listCp.getHead();
+        }
+    }
+
 
 
 
     public Kid returnKidEliminate(String Identification, int posicion) {
         Node temp = head;
 
-        Kid eliminateKid = new Kid("","",(byte) 0, 'm', new Location("",""));
+        Kid eliminateKid = new Kid("","",(byte) 0, "m", new Location("",""));
         if (head != null)
 
             if (head.getData().equals(Identification)) {
@@ -312,6 +333,23 @@ public class ListSE {
         }
         return acum;
     }
+
+    public int informRangeByAge(int first, int last)  {
+        if (first < 0 || last < 0 || first > last) {
+
+        }
+        Node temp = head;
+        int count = 0;
+        while (temp != null){
+            if (temp.getData().getAge() >= first && temp.getData().getAge() <= last){
+                count ++;
+            }
+            temp = temp.getNext();
+        }
+        return count;
+    }
+
+
 
 
 
