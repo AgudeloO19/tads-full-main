@@ -358,4 +358,64 @@ public class ListDE {
         this.head = listCP.getHead();
     }
 
+    /*
+    metodo que permita elimar un niño si pararse uno antes sino en sitio
+
+
+    elimarNiñoEnSitioPorIdentificacion(identificacion)
+
+    si
+    la cabeza es igual al identificacion pedida le decimos al ayudante que ponga como cabeza el sigunte
+
+    primero llamamo a un ayudnate
+    preguntamos si hay datos
+    si
+    le dicimos al ayudante que recorra la lista y que busque al niño con la identficacion ingresada
+    cuando lo encuntre y tiene los dos brazos llenos le digo el siguiente agarrre a mi anterior y mi aterior agarre al siguiente y si mi siguiente es nulo
+    le digo que agarre a mi aterior
+
+     */
+
+    public void deletePetBySite (String carnet){
+
+        if (this.head != null)
+        {
+            if(this.head.getData().getCarnet().equals(carnet))
+            {
+
+                head= head.getNext();
+                if (this.head != null)
+                {
+                 head.setPrevius(null);
+                }
+            }
+            else
+            {
+                NodeDE temp = this.head;
+                while (temp != null)
+                {
+                    if (temp.getData().getCarnet().equals(carnet))
+                    {
+                        temp.getPrevius().setNext(temp.getNext());
+                        if (temp.getNext() != null)
+                        {
+                            temp.getNext().setPrevius(temp.getPrevius());
+                        }
+                        break;
+                    }
+                    temp = temp.getNext();
+
+                }
+            }
+
+
+        }
+
+
+
+
+
+
+    }
+
 }
