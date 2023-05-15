@@ -8,7 +8,7 @@ import lombok.Data;
 
 public class GenderPetDTO {
 
-    private char     gender;
+    private String  gender;
 
     private int quantity;
 

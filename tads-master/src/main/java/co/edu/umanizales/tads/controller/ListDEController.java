@@ -1,16 +1,12 @@
 package co.edu.umanizales.tads.controller;
 
-import co.edu.umanizales.tads.controller.dto.PetsByLocationDTO;
-import co.edu.umanizales.tads.controller.dto.ReportKidsDTO;
-import co.edu.umanizales.tads.controller.dto.ReportPetsDTO;
-import co.edu.umanizales.tads.controller.dto.ResponseDTO;
-import co.edu.umanizales.tads.exception.ListDEExeption;
-import co.edu.umanizales.tads.exception.ListDEExeption;
+import co.edu.umanizales.tads.controller.dto.*;
 import co.edu.umanizales.tads.exception.ListSEException;
-import co.edu.umanizales.tads.model.LocationPets;
+import co.edu.umanizales.tads.model.Location;
 import co.edu.umanizales.tads.model.Pet;
 import co.edu.umanizales.tads.service.ListDEService;
-import co.edu.umanizales.tads.service.LocationPetsService;
+import co.edu.umanizales.tads.service.LocationService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +22,7 @@ public class ListDEController {
     private ListDEService listDEService;
 
     @Autowired
-    private LocationPetsService locationPetsService;
+    private LocationService locationService;
 
     @GetMapping
     public ResponseEntity<ResponseDTO> getPets() {
@@ -34,35 +30,43 @@ public class ListDEController {
                 200, listDEService.getPets(), null), HttpStatus.OK);
     }
 
-    //Adicionar niños
-    @GetMapping(path = "/addpet")
-    public ResponseEntity<ResponseDTO> add(@RequestBody Pet pet) {
-        try {
-            if (pet == null) {
-                throw new ListSEException("La mascota no tiene datos");
-            }
-            listDEService.getPets().addPet(pet);
-            return new ResponseEntity<>(new ResponseDTO(200,
-                    "La mascota ha sido añadida", null), HttpStatus.OK);
-        } catch (ListSEException e) {
-            return new ResponseEntity<>(new ResponseDTO(500,
-                    "Error al añadir la mascota", null), HttpStatus.INTERNAL_SERVER_ERROR);
+    //Adicionar mascotas
+    @PostMapping(path = "/addpet")
+    public ResponseEntity<ResponseDTO> addPet(@RequestBody @Valid PetDTO petDTO){
+        Location location = locationService.getLocationByCode(petDTO.getCodelocationpet());
+        if(location == null){
+            return new ResponseEntity<>(new ResponseDTO(
+                    404,"La ubicación no existe",
+                    null), HttpStatus.OK);
         }
+        try {
+            listDEService.getPets().addPet(
+                    new Pet(petDTO.getRace(),petDTO.getAgepet(),petDTO.getName(),
+                            petDTO.getGenderpet(),location , petDTO.getCarnet()));
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(
+                    409,e.getMessage(),
+                    null), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ResponseDTO(
+                200,"Se ha adicionado la mascota",
+                null), HttpStatus.OK);
+
     }
 
     //Invertir lista
     @GetMapping("/invertpets")
     public ResponseEntity<ResponseDTO> invertPets() {
+
         try {
-            listDEService.invertPets();
-            return new ResponseEntity<>(new ResponseDTO(
-                    200, "Se ha invertido la lista",
-                    null), HttpStatus.OK);
-        } catch (ListDEExeption e) {
-            return new ResponseEntity<>(new ResponseDTO(
-                    500, "Error al invertir la lista",
-                    null), HttpStatus.INTERNAL_SERVER_ERROR);
+            listDEService.getPets().invertPets();
+        } catch (ListSEException e) {
+            throw new RuntimeException();
         }
+        return new ResponseEntity<>(new ResponseDTO(
+                200, "Se ha invertido la lista",
+                null), HttpStatus.OK);
+
     }
 
     //Mascotas masculinas al inicio y femeninos al final.
@@ -84,7 +88,7 @@ public class ListDEController {
     @GetMapping(path="/petsintercalate")
     public ResponseEntity<ResponseDTO> boyIntercalateGirl()  {
         try {
-            listDEService.getPets().intercalatePetsGender();
+            listDEService.getPets().intercalatePetBySex();
             return new ResponseEntity<>(new ResponseDTO(200, "Las mascotas se han intercalado.",
                     null), HttpStatus.OK);
         } catch (ListSEException e) {
@@ -129,7 +133,7 @@ public class ListDEController {
     public ResponseEntity<ResponseDTO> getKidsByLocation() {
         try {
             List<PetsByLocationDTO> petsByLocationDTOList = new ArrayList<>();
-            for (LocationPets loc : locationPetsService.getLocationsPets()) {
+            for (Location loc : locationService.getLocations()) {
                 int count = listDEService.getPets().getCountPetsByLocationCode(loc.getCode());
                 if (count > 0) {
                     petsByLocationDTOList.add(new PetsByLocationDTO(loc, count));
@@ -149,7 +153,7 @@ public class ListDEController {
     public ResponseEntity<ResponseDTO> getKidsByDepartmentCode() {
         List<PetsByLocationDTO> petsByLocationDTOList = new ArrayList<>();
         try {
-            for (LocationPets loc : locationPetsService.getLocationsPets()) {
+            for (Location loc : locationService.getLocations()) {
                 int count = listDEService.getPets().getCountPetsByDepartmentCode(loc.getCode());
                 if (count > 0) {
                     petsByLocationDTOList.add(new PetsByLocationDTO(loc, count));
@@ -168,7 +172,7 @@ public class ListDEController {
     @GetMapping(path = "/petsbylocationgenders/{age}")
     public ResponseEntity<ResponseDTO> getReportPetsLocationGenders(@PathVariable byte age) {
         ReportPetsDTO reportPets =
-                new ReportPetsDTO(locationPetsService.getLocationsPetsByCodeSize(8));
+                new ReportPetsDTO(locationService.getLocationByCodeSize(8));
         listDEService.getPets().getReportPetsByLocationGendersByAge(age,reportPets);
         return new ResponseEntity<>(new ResponseDTO(
                 200, reportPets,null),HttpStatus.OK);

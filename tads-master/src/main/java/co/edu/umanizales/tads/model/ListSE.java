@@ -74,13 +74,31 @@ public class ListSE {
     metodo para añadir en posiscion
      */
 
-    public void addInpos(Kid kid,int pos) {
-        Node temp = head;
-        for (int i = 0; i < pos; i++) {
-            temp = temp.getNext();
+    public void addInpos(Kid kid, int position) throws ListSEException {
+        if (position < 0) {
+            throw new ListSEException("La posición no puede ser negativa");
         }
-        Node newNode =new Node(kid);
-        temp.setNext(newNode);
+
+        Node nuevoNodo = new Node(kid);
+
+        if (position == 0) {
+            nuevoNodo.setNext(head);
+            head = nuevoNodo;
+        } else {
+            Node actual = head;
+            int index = 1;
+            while (actual != null && index < position) {
+                actual = actual.getNext();
+                index++;
+            }
+
+            if (actual == null) {
+                throw new ListSEException("La posición es mayor que el tamaño de la lista");
+            }
+
+            nuevoNodo.setNext(actual.getNext());
+            actual.setNext(nuevoNodo);
+        }
     }
     /*
     niños al inicio y niñas al final
@@ -143,7 +161,7 @@ public class ListSE {
 
     }
 
-
+     // invertir la lista
     public void invert(){
         if(this.head !=null){
             ListSE listCp = new ListSE();
@@ -156,57 +174,50 @@ public class ListSE {
         }
     }
 
-    public void deleteKidById(String Identification, int posicion) {
-        Node temp = head;
-        if (head != null) {
-            if (head.getData().equals(Identification)) {
-                head = temp.getNext();
-            } else {
-                int pos = 1;
-                temp = temp.getNext();
-                pos++;
-                while (temp != null) {
-                    if (pos == posicion - 1) {
-                        break;
-                    }
 
+    // Eliminar por id
+
+    public void deleteKidById(String identification)throws ListSEException
+    {
+        if(head!=null)
+        {
+            ListSE listCp=new ListSE();
+            Node temp=head;
+            while(temp!= null)
+            {
+                if(temp.getData().getIdentification().equals(identification))
+                {
+                    temp=temp.getNext();
                 }
-                temp.setNext(temp.getNext().getNext());
+                listCp.add(temp.getData());
+                temp = temp.getNext();
             }
-        } else {
-            head = null;
+
+            head = listCp.getHead();
         }
+
+
     }
-    /*
-    Obtener el promedio de edad de los niños de la lista 
-     */
 
 
 
 
     // Eliminar ninos por edad
-    public void deleteKidByAge(String age, int posicion) {
-        Node temp = head;
-        if (head != null) {
-
-            if (head.getData().equals(age)) {
-                head = temp.getNext();
-
-            }
-            else
+    public void deleteKidByAge(byte age)throws ListSEException
+    {
+        if (head != null)
+        {
+            ListSE listCp = new ListSE();
+            Node temp = head;
+            while (temp != null)
             {
-                int pos = 1;
-                while (temp != null) {
-                    if (pos == posicion - 1) {
-                        break;
-                    }
-                    temp = temp.getNext();
-                    pos++;
+                if (temp.getData().getAge() != age)
+                {
+                    listCp.add(temp.getData());
                 }
-                temp.setNext(temp.getNext().getNext());
+                temp=temp.getNext();
             }
-        } else {
-            head = null;
+            listCp.head=head;
         }
     }
     //Obtener el promedio de edad de los niños de la lista.
@@ -228,41 +239,66 @@ public class ListSE {
     }
     //El niño adelante posiciones
 
+    public void gainPosition(String id, int position, ListSE listSE) throws ListSEException {
+        if (id == null) {
+            throw new ListSEException("Kid's identification can't be null");
+        }
+        if (position < 1) {
+            throw new ListSEException("Position can't be less than 1");
+        }
+        if (listSE == null) {
+            throw new ListSEException("List can't be null");
+        }
 
-    public void passKidPossitions(String idetification, int position)
-    {
-        if(head!= null){
-            Node temp = head;
-            int count=1;
-            while(temp!=null && !temp.getData().equals(idetification))
-            {
-                temp=temp.getNext();
+        if (head != null) {
+            Node temp = this.head;
+            int count = 1;
+
+            while (temp != null && !temp.getData().getIdentification().equals(id)) {
+                temp = temp.getNext();
                 count++;
             }
-            int positiontoadd=count-position;
-            Kid kidcopy=temp.getNext().getData();
-            deleteKidById(temp.getNext().getData().getIdentification(),count);
-            addInpos(kidcopy,positiontoadd);
+            int newPosition = count - position;
+            Kid listCopy = temp.getData();
+            listSE.deleteKidById(temp.getData().getIdentification());
+            listSE.addInpos(listCopy, newPosition);
         }
     }
+
 
     //el niño retrocede oosiciones dadas
 
-    public  void backKidPistions(String idetification,int position){
-        if(head!=null){
-            Node temp=head;
-            int count=1;
-            while (temp!=null && !temp.getData().equals(idetification))
-            {
-                temp=temp.getNext();
-                count++;
-            }
-            int positiontoadd=count+position;
-            Kid kidcopy=temp.getNext().getData();
-            deleteKidById(temp.getNext().getData().getIdentification(),count);
-            addInpos(kidcopy,positiontoadd);
+    public void backPosition(String id, int position, ListSE listSE) throws ListSEException {
+        if (head == null) {
+            throw new ListSEException("The list is empty");
         }
+        if (id == null) {
+            throw new ListSEException("Id can't be null");
+        }
+        if (position < 1 || position > listSE.size + 1) {
+            throw new ListSEException("Position out of range");
+        }
+
+        Node temp = this.head;
+        int count = 1;
+
+        while (temp != null && !temp.getData().getIdentification().equals(id)) {
+            temp = temp.getNext();
+            count++;
+        }
+
+        if (temp == null) {
+            throw new ListSEException("Kid with id " + id + " not found");
+        }
+
+        int newPosition = position + count;
+        Kid listCopy = temp.getData();
+        listSE.deleteKidById(temp.getData().getIdentification());
+        listSE.addInpos(listCopy, newPosition);
     }
+
+
+
 
     public void addToEndNameChar(String letra) throws ListSEException
     {
@@ -348,6 +384,8 @@ public class ListSE {
         }
         return count;
     }
+
+
 
 
 

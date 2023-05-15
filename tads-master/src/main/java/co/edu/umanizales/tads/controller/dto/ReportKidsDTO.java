@@ -23,7 +23,7 @@ public class ReportKidsDTO {
     public void updateQuantity(String city, char gender){
         for(KidByLocationAndGenderDTO loc: kidByLocationAndGenderDTO){
             if (loc.getCity().equals(city)) {
-                for(GenderDTO    genderDTO: loc.getGenders()){
+                for(GenderDTO genderDTO: loc.getGenders()){
                     if(genderDTO.getGender()==gender){
                         genderDTO.setQuantity(genderDTO.getQuantity()+1);
                         loc.setTotal(loc.getTotal()+1);

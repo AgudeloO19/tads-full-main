@@ -5,9 +5,16 @@ import co.edu.umanizales.tads.controller.dto.ReportPetsDTO;
 import co.edu.umanizales.tads.controller.dto.ReportPetsDTO;
 import co.edu.umanizales.tads.exception.ListDEExeption;
 import co.edu.umanizales.tads.exception.ListSEException;
-import lombok.Data;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ListDE {
     private NodeDE head;
     private int size;
@@ -18,12 +25,12 @@ public class ListDE {
             NodeDE temp = this.head;
             while (temp.getNext() != null) {
                 if(temp.getData().getCarnet().equals(pet.getCarnet())){
-                    throw new ListSEException("Ya existe un niño");
+                    throw new ListSEException("Ya existe una mascota");
                 }
                 temp = temp.getNext();
             }
             if(temp.getData().getCarnet().equals(pet.getCarnet())){
-                throw new ListSEException("Ya existe un niño");
+                throw new ListSEException("Ya existe una mascota");
             }
             NodeDE newPet = new NodeDE(pet);
             temp.setNext(newPet);
@@ -56,7 +63,7 @@ public class ListDE {
             ListDE listCP = new ListDE();
             NodeDE temp = this.head;
             while (temp != null) {
-                if (temp.getData().getGenderpet() == 'M') {    // tengo que cambiar algo
+                if (temp.getData().getGenderpet().equals("M")) {    // tengo que cambiar algo
                     listCP.addPetsToStart(temp.getData());
                 } else {
                     listCP.addPet(temp.getData());
@@ -69,43 +76,47 @@ public class ListDE {
             throw new ListSEException("La lista está vacía");
         }
     }
-
-    //Intercalar mascota masculino, femenino, masculino, femenino
-    public void intercalatePetsGender() throws ListSEException{
-        ListDE listPetMale = new ListDE();
-        ListDE listPetFemale = new ListDE();
-        NodeDE temp = this.head;
-
-        if (temp == null) {
-            throw new ListSEException("La lista está vacía");
+    public void intercalatePetBySex() throws ListSEException
+    {
+        ListDE listM=new ListDE();
+        ListDE listF=new ListDE();
+        ListDE interspersedlist= new ListDE();
+        NodeDE temp=head;
+        while(temp!=null)
+        {
+            if(temp.getData().getGenderpet().equals('M'))
+            {
+                listM.addPet(temp.getData());
+            }
+            else
+            {
+                listF.addPet(temp.getData());
+            }
+            temp.getNext();
         }
+        NodeDE tempM=listM.getHead();
+        NodeDE tempF=listF.getHead();
+        NodeDE tempInterspersed= interspersedlist.head;
+        while( tempM!=null && tempF!=null)
+        {
+            if(tempInterspersed.getData().getGenderpet().equals('M'))
+            {
+                interspersedlist.addPet(tempF.getData());
+            }
+            else
+            {
+                interspersedlist.addPet(tempM.getData());
+            }
+            tempInterspersed.getNext();
+        }
+        head=interspersedlist.getHead();
 
-        while (temp != null) {
-            if (temp.getData().getGenderpet() == 'M') {
-                listPetMale.addPet(temp.getData());
-            }
-            if (temp.getData().getGenderpet() == 'F') {     /// tengo que cambair algo
-                listPetFemale.addPet(temp.getData());
-            }
-            temp = temp.getNext();
-        }
-        ListDE newListPetsFemale = new ListDE();
-        NodeDE petMaleNode = listPetMale.getHead();
-        NodeDE petFemaleNode = listPetFemale.getHead();
-        while (petMaleNode != null || petFemaleNode != null) {
-            if (petMaleNode != null) {
-                newListPetsFemale.addPet(petMaleNode.getData());
-                petMaleNode = petMaleNode.getNext();
-            }
-            if (petFemaleNode != null) {
-                newListPetsFemale.addPet(petFemaleNode.getData());
-                petFemaleNode = petFemaleNode.getNext();
-            }
-        }
-        this.head = newListPetsFemale.getHead();
+
     }
 
-    //Dada un código eliminar a las mascotas del código dado
+
+
+    //Dada un código eliminar a las mascotas del carnet dado
     public void deletePetByIdentification(String code) throws ListSEException {
         if (this.head != null) {
             if (this.head.getData().getCarnet().equals(code)) {
@@ -193,12 +204,13 @@ public class ListDE {
                     report.updateQuantityPets(temp.getData().getLocationpet().getName(),
                             temp.getData().getGenderpet()); // tengo que cambiar algo
                 }
-                temp = temp.getNext();
+                temp =temp.getNext();
             }
+
         }
     }
 
-    //Método que me permita decirle a un niño determinado que adelante un número de posiciones dadas
+    //Método que me permita decirle a un perro determinado que adelante un número de posiciones dadas
     public void passPetByPosition(String codePet, int positions) throws ListSEException{
         if (head != null){
             if(positions<size){
@@ -232,7 +244,7 @@ public class ListDE {
         }
     }
 
-    //Método que me permita decirle a un niño determinado que pierda un numero de posiciones dadas
+    //Método que me permita decirle a un perro determinado que pierda un numero de posiciones dadas
     public void afterwardsPetsPositions(String codePet, int positions) throws ListSEException {
         if (head != null) {
             if (positions < size) {
@@ -410,9 +422,6 @@ public class ListDE {
 
 
         }
-
-
-
 
 
 
