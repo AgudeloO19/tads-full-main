@@ -21,24 +21,28 @@ public class ListDE {
 
     //Adicionar
     public void addPet(Pet pet) throws ListSEException {
-        if (this.head != null) {
-            NodeDE temp = this.head;
-            while (temp.getNext() != null) {
-                if(temp.getData().getCarnet().equals(pet.getCarnet())){
-                    throw new ListSEException("Ya existe una mascota");
+        if(head != null){
+            NodeDE temp = head;
+            while(temp.getNext() !=null)
+            {
+                if(temp.getData().getCarnet().equals(pet.getCarnet()))
+                {
+                    throw new ListSEException("Ya existe un niño");
                 }
                 temp = temp.getNext();
+
             }
             if(temp.getData().getCarnet().equals(pet.getCarnet())){
-                throw new ListSEException("Ya existe una mascota");
+                throw new ListSEException("Ya existe un niño");
             }
-            NodeDE newPet = new NodeDE(pet);
-            temp.setNext(newPet);
-            newPet.setPrevius(temp);
-        } else {
-            this.head = new NodeDE(pet);
+            /// Parado en el último
+            NodeDE newNode = new NodeDE(pet);
+            temp.setNext(newNode);
         }
-        size++;
+        else {
+            head = new NodeDE(pet);
+        }
+        size ++;
     }
 
     //Invertir lista
@@ -78,40 +82,41 @@ public class ListDE {
     }
     public void intercalatePetBySex() throws ListSEException
     {
-        ListDE listM=new ListDE();
-        ListDE listF=new ListDE();
-        ListDE interspersedlist= new ListDE();
-        NodeDE temp=head;
-        while(temp!=null)
+        if(head!=null)
         {
-            if(temp.getData().getGenderpet().equals('M'))
-            {
-                listM.addPet(temp.getData());
+            ListDE listM = new ListDE();
+            ListDE listF = new ListDE();
+            ListDE interspersedlist = new ListDE();
+            NodeDE temp = head;
+            while (temp != null) {
+                if (temp.getData().getGenderpet().equals("M")) {
+                    listM.addPet(temp.getData());
+                } else {
+                    listF.addPet(temp.getData());
+                }
+                temp = temp.getNext();
             }
-            else
-            {
-                listF.addPet(temp.getData());
-            }
-            temp.getNext();
-        }
-        NodeDE tempM=listM.getHead();
-        NodeDE tempF=listF.getHead();
-        NodeDE tempInterspersed= interspersedlist.head;
-        while( tempM!=null && tempF!=null)
-        {
-            if(tempInterspersed.getData().getGenderpet().equals('M'))
-            {
+            NodeDE tempM = listM.getHead();
+            NodeDE tempF = listF.getHead();
+
+            while (tempM != null && tempF != null) {
                 interspersedlist.addPet(tempF.getData());
-            }
-            else
-            {
                 interspersedlist.addPet(tempM.getData());
+                tempF = tempF.getNext();
+                tempM = tempM.getNext();
             }
-            tempInterspersed.getNext();
+            while (tempF != null) {
+                interspersedlist.addPet(tempF.getData());
+                tempF = tempF.getNext();
+            }
+
+            while (tempM != null) {
+                interspersedlist.addPet(tempM.getData());
+                tempM = tempM.getNext();
+            }
+            head = interspersedlist.getHead();
         }
-        head=interspersedlist.getHead();
-
-
+        else { throw  new ListSEException("No hay mascotas");}
     }
 
 
@@ -151,7 +156,7 @@ public class ListDE {
             NodeDE temp = head;
             int contador = 0;
             int ages = 0;
-            while (temp.getNext() != null) {
+            while (temp != null) {
                 contador++;
                 ages = ages + temp.getData().getAgepet();
                 temp = temp.getNext();
@@ -179,36 +184,9 @@ public class ListDE {
         }
     }
 
-    public int getCountPetsByDepartmentCode(String code) throws ListSEException{
-        int count = 0;
-        if (this.head != null) {
-            NodeDE temp = this.head;
-            while (temp != null) {
-                if (temp.getData().getLocationpet().getCode().equals(code)) {
-                    count++;
-                }
-                temp = temp.getNext();
-            }
-            return count;
-        }
-        else{
-            throw new ListSEException("La lista está vacía");
-        }
-    }
 
-    public void getReportPetsByLocationGendersByAge(byte age, ReportPetsDTO report){
-        if(head != null){
-            NodeDE temp = this.head;
-            while(temp!=null){
-                if(temp.getData().getAgepet() > age){
-                    report.updateQuantityPets(temp.getData().getLocationpet().getName(),
-                            temp.getData().getGenderpet()); // tengo que cambiar algo
-                }
-                temp =temp.getNext();
-            }
 
-        }
-    }
+
 
     //Método que me permita decirle a un perro determinado que adelante un número de posiciones dadas
     public void passPetByPosition(String codePet, int positions) throws ListSEException{
@@ -245,73 +223,143 @@ public class ListDE {
     }
 
     //Método que me permita decirle a un perro determinado que pierda un numero de posiciones dadas
-    public void afterwardsPetsPositions(String codePet, int positions) throws ListSEException {
-        if (head != null) {
-            if (positions < size) {
-                if (head.getData().getCarnet() == codePet) {
-                    NodeDE node = new NodeDE(head.getNext().getData());
-                    addPetByPosition(node.getData(),positions + 1 );
-                    head = head.getNext();
-                    head.setPrevius(null);
-                } else {
-                    int count = 1;
-                    NodeDE temp = head;
-                    while (temp.getNext() != null && temp.getNext().getData().getCarnet() != codePet) {
-                        temp = temp.getNext();
-                        count++;
-                    }
-                    if (temp.getNext() == null) {
-                        throw new ListSEException("No se encontró un nodo con la identificación proporcionada.");
-                    } else {
-                        NodeDE temp2 = new NodeDE(temp.getNext().getData());
-                        temp.setNext(temp.getNext().getNext());
-                        if (temp.getNext() != null) {
-                            temp.getNext().setPrevius(temp);
-                        }
-                        addPetByPosition(temp2.getData(), count + 1 + positions);
-                    }
-                }
-            } else {
-                throw new ListSEException("La posición proporcionada excede el tamaño de la lista");
+
+    public void passPositionsPet(String carnet, int position)throws ListSEException
+    {
+        if(head!=null)
+        {
+            NodeDE temp=head;
+            if(head.getData().getCarnet().equals(carnet))
+            {
+                throw new ListSEException("La cabeza no puede ganar más posiciones");
             }
-        } else {
-            throw new ListSEException("La lista se encuentra vacía.");
+            int count=1;
+            while(temp.getNext()!=null && !temp.getNext().getData().getCarnet().equals(carnet))
+            {
+                temp=temp.getNext();
+                count++;
+            }
+            if(count<position)
+            {
+                throw new ListSEException("No se puede adelantar este numero de posiciones");
+            }
+            int positiontoadd=(count+1)-position;
+            Pet pedcopy=temp.getNext().getData();
+            deletePetByIdentification(pedcopy.getCarnet());
+            addPetByPosition(pedcopy,positiontoadd);
+
         }
+        else { throw  new ListSEException("No hay mascotas");}
     }
 
-    public void addPetByPosition(Pet pet, int position){
-        NodeDE newNode = new NodeDE(pet);
-        if (position == 0){
-            newNode.setNext(head);
-            if (head != null){
-                head.setPrevius(newNode);
+    public void lostPositionsPet(String carnet, int position)throws ListSEException
+    {
+        if(head!=null)
+        {
+            NodeDE temp=head;
+            if(head.getData().getCarnet().equals(carnet))
+            {
+                Pet headcopy=temp.getData();
+                deletePetByIdentification(headcopy.getCarnet());
+                addPetByPosition(headcopy,(position+1));
             }
-            head = newNode;
-        } else {
+            else
+            {
+
+                int count = 1;
+                while (temp.getNext() != null && !temp.getNext().getData().getCarnet().equals(carnet))
+                {
+                    temp = temp.getNext();
+                    count++;
+                }
+                int positiontoadd = (count + 1) + position;
+                Pet petcopy = temp.getNext().getData();
+                deletePetByIdentification(petcopy.getCarnet());
+                addPetByPosition(petcopy, positiontoadd);
+
+            }
+        }
+        else { throw  new ListSEException("No hay mascotas");}
+    }
+    public void deletePetsByAge(byte age) throws ListSEException
+    {
+        if (head != null)
+        {
+            ListDE listCp = new ListDE();
             NodeDE temp = head;
-            for (int i = 0; i < position - 1; i++){
+            while (temp != null)
+            {
+                if (temp.getData().getAgepet() != age)
+                {
+                    listCp.addPet(temp.getData());
+                }
                 temp = temp.getNext();
             }
-            newNode.setNext(temp.getNext());
-            if (temp.getNext()!=null){
-                temp.getNext().setPrevius(newNode);
-            }
-            temp.setNext(newNode);
-            newNode.setPrevius(temp);
+            head = listCp.getHead();
         }
-        size++;
+        else { throw  new ListSEException("No hay mascotas");}
     }
 
-    public void addPetsToStart(Pet pet) {
-        if (head != null) {
-            NodeDE newNodeDE = new NodeDE(pet);
+    public void addPetByPosition(Pet pet, int posicion)throws ListSEException
+    {
+        NodeDE temp=head;
+        if(head!=null)
+        {
+            if(posicion==1)
+            {
+                addPetsToStart(pet);
+            }
+            else
+            {
+                for(int i=1;i<posicion-1;i++)
+                {
+                    if(temp.getData().getCarnet().equals(pet.getCarnet()))
+                    {
+                        throw new ListSEException("Ya existe una mascota");
+                    }
+                    temp = temp.getNext();
+                }
+                if(temp.getData().getCarnet().equals(pet.getCarnet()))
+                {
+                    throw new ListSEException("Ya existe una mascota");
+                }
+                NodeDE newNodeDE= new NodeDE(pet);
+                newNodeDE.setNext(temp.getNext());
+                temp.setNext(newNodeDE);
+                newNodeDE.setPrevius(temp);
+            }
+        }
+        else head= new NodeDE(pet);
+
+    }
+
+    public void addPetsToStart(Pet pet)throws ListSEException
+    {
+        if (head!=null)
+        {
+            NodeDE temp = head;
+            while(temp.getNext() !=null)
+            {
+                if(temp.getData().getCarnet().equals(pet.getCarnet()))
+                {
+                    throw new ListSEException("Ya existe una mascota");
+                }
+                temp = temp.getNext();
+
+            }
+            if(temp.getData().getCarnet().equals(pet.getCarnet()))
+            {
+                throw new ListSEException("Ya existe una mascota");
+            }
+            NodeDE newNodeDE= new NodeDE(pet);
             newNodeDE.setNext(head);
             head.setPrevius(newNodeDE);
-            head = newNodeDE;
-        } else {
-            head = new NodeDE(pet);
+            head=newNodeDE;
         }
-        size++;
+        else
+        {
+            head= new NodeDE(pet);
+        }
     }
 
     public void changesPetExtremes() {
@@ -346,29 +394,47 @@ public class ListDE {
         return count;
     }
 
-    public void boysByLetter(char initial) throws ListSEException{
-
-        ListDE listCP = new ListDE();
-        NodeDE temp = this.head;
-
-        while (temp != null){
-            if (temp.getData().getName().charAt(0) != Character.toUpperCase(initial)){
-                listCP.addPet(temp.getData());
+    public void addToEndNameChar(String letter) throws ListSEException {
+        if (head != null)
+        {
+            ListDE listCp = new ListDE();
+            NodeDE temp = head;
+            while (temp != null)
+            {
+                if (temp.getData().getName().startsWith(letter))
+                {
+                    listCp.addPet(temp.getData());
+                }
+                else
+                {
+                    listCp.addPetsToStart(temp.getData());
+                }
+                temp = temp.getNext();
             }
-            temp = temp.getNext();
+            head = listCp.getHead();
         }
-
-        temp = this.head;
-
-        while (temp != null){
-            if (temp.getData().getName().charAt(0) == Character.toUpperCase(initial)){
-                listCP.addPet(temp.getData());
-            }
-            temp = temp.getNext();
-        }
-
-        this.head = listCP.getHead();
+        else { throw  new ListSEException("No hay mascotas");}
     }
+
+    public int quantityByRangeAgeDE(int min,int max)
+    {
+        int count = 0;
+        if (head != null)
+        {
+            NodeDE temp = head;
+            while (temp != null)
+            {
+                if(temp.getData().getAgepet()>=min && temp.getData().getAgepet()<=max)
+                {
+                    count++;
+                }
+                temp=temp.getNext();
+            }
+        }
+        return count;
+    }
+
+
 
     /*
     metodo que permita elimar un niño si pararse uno antes sino en sitio

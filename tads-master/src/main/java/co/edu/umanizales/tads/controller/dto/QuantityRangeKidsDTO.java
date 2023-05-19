@@ -6,9 +6,10 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 
-public class GenderDTO {
+public class QuantityRangeKidsDTO {
+    private RangeKidsDTO range;
+    int quantity;
 
-    private String gender;
-    private int quantity;
+
 
 }

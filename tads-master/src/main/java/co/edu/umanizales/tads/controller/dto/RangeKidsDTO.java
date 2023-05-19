@@ -6,9 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 
-public class GenderDTO {
-
-    private String gender;
-    private int quantity;
-
+public class RangeKidsDTO {
+    private int minimum;
+    private int maximum;
 }

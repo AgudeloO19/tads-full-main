@@ -19,7 +19,7 @@ public class KidByLocationAndGenderDTO {
         this.city = city;
         this.total = 0;
         this.genders = new ArrayList<>();
-        this.genders.add(new GenderDTO('M', 0));
-        this.genders.add(new GenderDTO('F', 0));
+        this.genders.add(new GenderDTO("M", 0));
+        this.genders.add(new GenderDTO("F", 0));
     }
 }
