@@ -257,12 +257,15 @@ public class ListDE {
         if(head!=null)
         {
             NodeDE temp=head;
+
             if(head.getData().getCarnet().equals(carnet))
+
             {
                 Pet headcopy=temp.getData();
                 deletePetByIdentification(headcopy.getCarnet());
                 addPetByPosition(headcopy,(position+1));
             }
+
             else
             {
 
@@ -272,12 +275,19 @@ public class ListDE {
                     temp = temp.getNext();
                     count++;
                 }
+                if(position>count)
+                {
+                    throw new ListSEException("No se puede perder las posiciones deseadas");
+                }
                 int positiontoadd = (count + 1) + position;
                 Pet petcopy = temp.getNext().getData();
                 deletePetByIdentification(petcopy.getCarnet());
                 addPetByPosition(petcopy, positiontoadd);
 
+
+
             }
+
         }
         else { throw  new ListSEException("No hay mascotas");}
     }
@@ -347,6 +357,7 @@ public class ListDE {
                 temp = temp.getNext();
 
             }
+
             if(temp.getData().getCarnet().equals(pet.getCarnet()))
             {
                 throw new ListSEException("Ya existe una mascota");
@@ -454,43 +465,48 @@ public class ListDE {
 
      */
 
-    public void deletePetBySite (String carnet){
-
-        if (this.head != null)
+    public void deleteInPosition(String carnet)throws ListSEException
+    {
+        if(head!=null)
         {
-            if(this.head.getData().getCarnet().equals(carnet))
+            if(head.getData().getCarnet().equals(carnet))
             {
-
-                head= head.getNext();
-                if (this.head != null)
-                {
-                 head.setPrevius(null);
+                head=head.getNext();
+                if(head != null) {
+                    head.setPrevius(null);
                 }
             }
             else
             {
-                NodeDE temp = this.head;
-                while (temp != null)
+                NodeDE temp=head;
+                while(temp!=null)
                 {
-                    if (temp.getData().getCarnet().equals(carnet))
+                    if(temp.getData().getCarnet().equals(carnet))
                     {
                         temp.getPrevius().setNext(temp.getNext());
-                        if (temp.getNext() != null)
+                        if(temp.getNext()!=null)
                         {
                             temp.getNext().setPrevius(temp.getPrevius());
                         }
+                        else
+                        {
+                            temp.getPrevius().setNext(null);
+                        }
                         break;
+                    }
+                    else
+                    {
+                        new ListSEException("No existe un niño con ese id");
                     }
                     temp = temp.getNext();
 
                 }
+
             }
 
-
         }
-
-
-
+        else { throw  new ListSEException("No hay mascotas");}
     }
+
 
 }

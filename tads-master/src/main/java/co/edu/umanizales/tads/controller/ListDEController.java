@@ -288,7 +288,25 @@ public class ListDEController {
         return new ResponseEntity<>(new ResponseDTO(200,quantityRangePetsDTOList,null),HttpStatus.OK);
     }
 
+    @GetMapping(path="/deleteinposition/{identification}")
+    public ResponseEntity<ResponseDTO>deleteinposition(@PathVariable String carnet)
+    {
+
+        try {
+            listDEService.getPets().deleteInPosition(carnet);
+        } catch (ListSEException e) {
+            return new ResponseEntity<>(new ResponseDTO(
+                    409,e.getMessage(),
+                    null), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(new ResponseDTO(200,"Se ha eliminado la mascota",null),HttpStatus.OK);
+    }
 
 
 
 }
+
+
+
+
